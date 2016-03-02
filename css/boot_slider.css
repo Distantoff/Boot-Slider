@@ -30,7 +30,7 @@
 }
 
 #slider_full_items .opacity {
-	background: rgba(0,0,0,0.2);
+	background: rgba(0,0,0,0.3);
 	width: 100%;
 	height: 605px;
 	position: absolute;
@@ -141,7 +141,8 @@
 #slider_loading {
 	width: 0px;
 	height: 2px;
-	background: #ff5405;
+	background: #D2268B;
 	position: relative;
 	z-index: 1;
+	margin-top: -2px;
 }
