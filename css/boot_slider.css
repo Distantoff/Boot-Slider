@@ -36,9 +36,9 @@
 	top: 148px;
 	margin: 0;
 	border: 1px solid #FFF;
-	padding: 12px;
+	padding: 16px;
 	display: inline;
-	letter-spacing: 0.5px;
+	letter-spacing: 1px;
 }
 
 #slider_full_items .opacity {
