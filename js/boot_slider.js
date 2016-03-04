@@ -1,5 +1,5 @@
 $(document).ready(function(){
-			/* Интервал смены слайдов | The interval slide change */
+	/* Интервал смены слайдов | The interval slide change */
 	$timeInterval = 3000;
 
 	/* Инициализация | Initialization */
@@ -13,8 +13,8 @@ $(document).ready(function(){
 		$fullItems = $(".slider_full_item");
 	}
 
-	$fullItems.first().addClass("slider_full_items_active");
-	$("#slider_items > div:first").addClass("slider_items_active");
+	$fullItems.first().addClass("slider_full_item_active");
+	$("#slider_items > div:first").addClass("slider_item_active");
 	
 	$fullItems.each(function(index){
 		$(this).css({"right" : -$(this).outerWidth() * index});
@@ -24,6 +24,8 @@ $(document).ready(function(){
 		var $index = $(this).index();
 		_slideChange($index);
 	});
+	/*-----------------------------------*/
+
 
 	/* Назначение кнопок | The buttons */
 	$("#slider_next").click(function(){
@@ -33,35 +35,38 @@ $(document).ready(function(){
 	$("#slider_prev").click(function(){
 		_slideTo("prev");
 	});
+	/*-----------------------------------*/
 
 	/* Создаем интервал и запускаем первый слайд | Create an interval and start the first slide */
-	//$sliderInterval = setInterval(function() {_slideTo("next");}, $timeInterval);
-	//_slideTo(0);
+	$sliderInterval = setInterval(function() {_slideTo("next");}, $timeInterval);
+	_slideTo(0);
+	/*-----------------------------------*/
+	
 });
 
 function _slideChange($index) {
-	//clearInterval($sliderInterval);
-	//$sliderInterval = setInterval(function() {_slideTo("next");}, $timeInterval);
+	clearInterval($sliderInterval);
+	$sliderInterval = setInterval(function() {_slideTo("next");}, $timeInterval);
 
-	$("#slider_items > div").removeClass("slider_items_active");
+	$("#slider_items > div").removeClass("slider_item_active");
 
 	$fullItems.each(function(index){
 		//console.log($index);
-		$(this).removeClass("slider_full_items_active");
+		$(this).removeClass("slider_full_item_active");
 		if (($index - index) == 0) {
-			$(this).addClass("slider_full_items_active");
+			$(this).addClass("slider_full_item_active");
 
-			$("#slider_items > div").eq($index).addClass("slider_items_active");
+			$("#slider_items > div").eq($index).addClass("slider_item_active");
 		}
 			
 		$(this).animate({"right" : $(this).outerWidth() * ($index - index)});
 	});
 
-	_statusLoad();
+	_slideProgress();
 }
 
 function _slideTo($way) {
-	var $index = $("#slider_full_items > div.slider_full_items_active").index();
+	var $index = $("#slider_full_items > div.slider_full_item_active").index();
 	//console.log($index);
 	var $lastFullItem = $("#slider_full_items > div:last").index();
 	//console.log($lastFullItem);
@@ -78,7 +83,7 @@ function _slideTo($way) {
 	_slideChange($index);
 }
 
-function _statusLoad() {
+function _slideProgress() {
 	var $sliderLoading = $("#slider_loading");
 
 	if ($sliderLoading.length) {
