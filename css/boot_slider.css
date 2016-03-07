@@ -66,6 +66,10 @@
 	position: absolute;
 }
 
+.slider_full_item_active {
+	/*opacity: 1 !important;*/
+}
+
 #slider_full {
 }
 
@@ -81,6 +85,12 @@
 	position: absolute;
 	text-align: center;
 	padding: 0;
+	/*opacity: 0;
+
+	-webkit-transition: opacity 0.3s ease-out 0s;
+    -moz-transition: opacity 0.3s ease-out 0s;
+    -o-transition: opacity 0.3s ease-out 0s;
+    transition: opacity 0.3s ease-out 0s;*/
 }
 
 #slider_full_items p {

@@ -19,7 +19,7 @@ $(document).ready(function(){
 	$fullItems.each(function(index){
 		$(this).css({"right" : -$(this).outerWidth() * index});
 	});
-
+	
 	$("#slider_items > div").click(function(){
 		var $index = $(this).index();
 		_slideChange($index);
@@ -38,15 +38,15 @@ $(document).ready(function(){
 	/*-----------------------------------*/
 
 	/* Создаем интервал и запускаем первый слайд | Create an interval and start the first slide */
-	$sliderInterval = setInterval(function() {_slideTo("next");}, $timeInterval);
-	_slideTo(0);
+	//$sliderInterval = setInterval(function() {_slideTo("next");}, $timeInterval);
+	//_slideTo(0);
 	/*-----------------------------------*/
 	
 });
 
 function _slideChange($index) {
-	clearInterval($sliderInterval);
-	$sliderInterval = setInterval(function() {_slideTo("next");}, $timeInterval);
+	//clearInterval($sliderInterval);
+	//$sliderInterval = setInterval(function() {_slideTo("next");}, $timeInterval);
 
 	$("#slider_items > div").removeClass("slider_item_active");
 
@@ -59,7 +59,7 @@ function _slideChange($index) {
 			$("#slider_items > div").eq($index).addClass("slider_item_active");
 		}
 			
-		$(this).animate({"right" : $(this).outerWidth() * ($index - index)});
+		_slideAnimate( $(this), $index, index);
 	});
 
 	_slideProgress();
@@ -81,6 +81,10 @@ function _slideTo($way) {
 			$index = $lastFullItem;
 	}
 	_slideChange($index);
+}
+
+function _slideAnimate($slide, $indexTo, $index) {
+	$slide.animate({"right" : $slide.outerWidth() * ($indexTo - $index)});
 }
 
 function _slideProgress() {
