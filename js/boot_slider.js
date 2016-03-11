@@ -1,3 +1,4 @@
+
 $(document).ready(function(){
 	/* Интервал смены слайдов | The interval slide change */
 	$timeInterval = 3000;
@@ -16,9 +17,9 @@ $(document).ready(function(){
 	$fullItems.first().addClass("slider_full_item_active");
 	$("#slider_items > div:first").addClass("slider_item_active");
 	
-	$fullItems.each(function(index){
+	/*$fullItems.each(function(index){
 		$(this).css({"right" : -$(this).outerWidth() * index});
-	});
+	});*/
 	
 	$("#slider_items > div").click(function(){
 		var $index = $(this).index();
@@ -39,7 +40,7 @@ $(document).ready(function(){
 
 	/* Создаем интервал и запускаем первый слайд | Create an interval and start the first slide */
 	//$sliderInterval = setInterval(function() {_slideTo("next");}, $timeInterval);
-	//_slideTo(0);
+	_slideChange(0);
 	/*-----------------------------------*/
 	
 });
@@ -49,20 +50,38 @@ function _slideChange($index) {
 	//$sliderInterval = setInterval(function() {_slideTo("next");}, $timeInterval);
 
 	$("#slider_items > div").removeClass("slider_item_active");
-
 	$fullItems.each(function(index){
 		//console.log($index);
-		$(this).removeClass("slider_full_item_active");
+		$(this).removeClass("slider_full_item_active").removeClass("slider_full_item_next").removeClass("slider_full_item_prev");
 		if (($index - index) == 0) {
 			$(this).addClass("slider_full_item_active");
-
 			$("#slider_items > div").eq($index).addClass("slider_item_active");
 		}
-			
-		_slideAnimate( $(this), $index, index);
-	});
 
+		if (($index - index) == 1) {
+			$(this).addClass("slider_full_item_prev");
+		}
+
+		if (($index - index) == -1) {
+			$(this).addClass("slider_full_item_next");
+		}
+
+		if ($index + 1 == $fullItems.length) {
+			$fullItems.eq(0).addClass("slider_full_item_next");
+		}
+
+		if ($index == 0) {
+			$fullItems.last().addClass("slider_full_item_prev");
+		}
+	});
+	
+	_slideAnimate($way);
 	_slideProgress();
+	
+	console.log($index);
+	console.log($fullItems.length);
+
+	
 }
 
 function _slideTo($way) {
@@ -83,8 +102,25 @@ function _slideTo($way) {
 	_slideChange($index);
 }
 
-function _slideAnimate($slide, $indexTo, $index) {
-	$slide.animate({"right" : $slide.outerWidth() * ($indexTo - $index)});
+function _slideAnimate($way) {
+	var $slide = $("div.slider_full_item_active");
+	var $slideNext = $("div.slider_full_item_next");
+	var $slidePrev = $("div.slider_full_item_prev");
+
+	$slideNext.css("display","block");
+	$slidePrev.css("display","block");
+
+	$slide.animate({"left" : "0px"});
+	if ($way == "next") {
+		$slidePrev.animate({"left" : $slide.outerWidth() * -1}, function(){$(this).css("display","none");});
+		$slideNext.css({"left" : $slide.outerWidth() * 1, "display" : "none"});
+	}
+	else if ($way == "prev") {
+		$slidePrev.css({"left" : $slide.outerWidth() * -1, "display" : "none"});
+		$slideNext.animate({"left" : $slide.outerWidth() * 1}, function(){$(this).css("display","none");});
+	}
+	
+	//$slide.animate({"right" : $slide.outerWidth() * ($indexTo - $index)});
 }
 
 function _slideProgress() {
