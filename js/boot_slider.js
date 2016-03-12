@@ -4,14 +4,14 @@ $(document).ready(function(){
 	$timeInterval = 3000;
 
 	/* Инициализация | Initialization */
-	$fullItems = 0;
+	$slideFullItems = 0;
 
 	if ($("#slider_full_items > div").length) {
-		$fullItems = $("#slider_full_items > div");
+		$slideFullItems = $("#slider_full_items > div");
 	}
 	else {
 		$("#slider_full_items").append( $(".slider_full_item") );
-		$fullItems = $(".slider_full_item");
+		$slideFullItems = $(".slider_full_item");
 	}
 
 	$("#slider_items > div:first").addClass("slider_item_active");
@@ -20,8 +20,6 @@ $(document).ready(function(){
 		var $index = $(this).index();
 		_slideChange($index, "next");
 	});
-	/*-----------------------------------*/
-
 
 	/* Назначение кнопок | The buttons */
 	$("#slider_next").click(function(){
@@ -31,13 +29,10 @@ $(document).ready(function(){
 	$("#slider_prev").click(function(){
 		_slideTo("prev");
 	});
-	/*-----------------------------------*/
 
 	/* Создаем интервал и запускаем первый слайд | Create an interval and start the first slide */
 	//$sliderInterval = setInterval(function() {_slideTo("next");}, $timeInterval);
 	_slideChange(0);
-	/*-----------------------------------*/
-	
 });
 
 function _slideChange($index) {
@@ -46,23 +41,19 @@ function _slideChange($index) {
 	
 	$("#slider_full_items > div").removeClass("slider_full_item_active_last");
 	var $slideActive = $("#slider_full_items > div.slider_full_item_active");
+	var $slideItems = $("#slider_items > div");
 	var $way = 1;
 
 	if ($slideActive.length) {
-		$("div.slider_full_item_active").addClass("slider_full_item_active_last");
-
-		$way = $slideActive.index() < $index ? -1 : 1;
+		$slideActive.addClass("slider_full_item_active_last");
+		$way = $slideActive.index() > $index ? -1 : 1;
 	}
+	$slideActive.removeClass("slider_full_item_active");
+
+	$slideItems.removeClass("slider_item_active");
+	$slideItems.eq($index).addClass("slider_item_active");
 	
-	$("#slider_items > div").removeClass("slider_item_active");
-	$fullItems.each(function(index){
-		//console.log($index);
-		$(this).removeClass("slider_full_item_active");
-		if (($index - index) == 0) {
-			$(this).addClass("slider_full_item_active");
-			$("#slider_items > div").eq($index).addClass("slider_item_active");
-		}
-	});
+	$slideFullItems.eq($index).addClass("slider_full_item_active");
 
 	_slideAnimate($way);
 	//_slideProgress();
@@ -72,9 +63,8 @@ function _slideChange($index) {
 
 function _slideTo($way) {
 	var $index = $("#slider_full_items > div.slider_full_item_active").index();
-	//console.log($index);
 	var $lastFullItem = $("#slider_full_items > div:last").index();
-	//console.log($lastFullItem);
+	
 	if ($way == "next") {
 		$index += 1;
 		if ($index > $lastFullItem)
@@ -92,8 +82,8 @@ function _slideAnimate($way) {
 	var $slide = $("#slider_full_items > div.slider_full_item_active");
 	var $slideLastActive = $("#slider_full_items > div.slider_full_item_active_last");
 
-	$slideLastActive.css("display","block").animate({"left" : $slide.outerWidth() * $way}, function(){ $(this).css("display","none"); });
-	$slide.css({"left" : -$slide.outerWidth() * $way}).animate({"left" : "0px"});
+	$slideLastActive.css("display","block").animate({"left" : -$slide.outerWidth() * $way}, function(){ $(this).css("display","none"); });
+	$slide.css({"left" : $slide.outerWidth() * $way}).animate({"left" : "0px"});
 }
 
 function _slideProgress() {

@@ -68,7 +68,7 @@
 
 .slider_full_item_active {
 	display: block !important;
-	/*left: 0;*/
+	left: 0;
 }
 
 #slider_full {
