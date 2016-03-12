@@ -14,12 +14,7 @@ $(document).ready(function(){
 		$fullItems = $(".slider_full_item");
 	}
 
-	//$fullItems.first().addClass("slider_full_item_active");
 	$("#slider_items > div:first").addClass("slider_item_active");
-	
-	/*$fullItems.each(function(index){
-		$(this).css({"right" : -$(this).outerWidth() * index});
-	});*/
 	
 	$("#slider_items > div").click(function(){
 		var $index = $(this).index();
@@ -67,22 +62,12 @@ function _slideChange($index) {
 			$(this).addClass("slider_full_item_active");
 			$("#slider_items > div").eq($index).addClass("slider_item_active");
 		}
-
-		if (($index - index) == 1) {
-			$(this).addClass("slider_full_item_prev");
-		}
-
-		if (($index - index) == -1) {
-			$(this).addClass("slider_full_item_next");
-		}
 	});
 
 	_slideAnimate($way);
 	//_slideProgress();
 	console.log($index);
 	console.log($way);
-
-	
 }
 
 function _slideTo($way) {
@@ -108,17 +93,7 @@ function _slideAnimate($way) {
 	var $slideLastActive = $("#slider_full_items > div.slider_full_item_active_last");
 
 	$slideLastActive.css("display","block").animate({"left" : $slide.outerWidth() * $way}, function(){ $(this).css("display","none"); });
-	$slide.css({"left" : $slide.outerWidth() * $way}).animate({"left" : "0px"});
-	
-	/*if ($way == "next") {
-		$slidePrev.animate({"left" : $slide.outerWidth() * -1}, function(){$(this).css("display","none");});
-		$slideNext.css({"left" : $slide.outerWidth() * 1, "display" : "none"});
-	}
-	else if ($way == "prev") {
-		$slidePrev.css({"left" : $slide.outerWidth() * -1, "display" : "none"});
-		$slideNext.animate({"left" : $slide.outerWidth() * 1}, function(){$(this).css("display","none");});
-	}*/
-	
+	$slide.css({"left" : -$slide.outerWidth() * $way}).animate({"left" : "0px"});
 }
 
 function _slideProgress() {
