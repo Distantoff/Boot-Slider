@@ -124,7 +124,7 @@
 
 .slider_nav {
     position: relative;
-    z-index: 1;
+    z-index: 100;
     height: 100px;
     top: 360px;
     opacity: 0.3;

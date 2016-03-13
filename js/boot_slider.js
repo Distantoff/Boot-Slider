@@ -18,7 +18,7 @@ $(document).ready(function(){
 	
 	$("#slider_items > div").click(function(){
 		var $index = $(this).index();
-		_slideChange($index, "next");
+		_slideChange($index);
 	});
 
 	/* Назначение кнопок | The buttons */
@@ -31,13 +31,62 @@ $(document).ready(function(){
 	});
 
 	/* Создаем интервал и запускаем первый слайд | Create an interval and start the first slide */
-	//$sliderInterval = setInterval(function() {_slideTo("next");}, $timeInterval);
+	//$sliderInterval = setInterval(function() { _slideInterval(); }, $timeInterval);
+	//$slideProgress.start();
 	_slideChange(0);
+
+	$("#slider_full").hover(function(){
+	//	$slideProgress.stop();
+		
+	}, function(){
+	//	$slideProgress.start();
+	});
 });
 
+var $slideProgress = {
+
+	start : function () {
+		var self = this;
+		this.interval = setInterval(function() { self.intervalFunction(); }, $timeInterval);
+	},
+
+	stop : function() {
+		clearInterval(this.interval);
+		delete this.interval;
+		console.log($("#slider_loading").width());
+	},
+
+	intervalFunction : function() {
+		_slideTo("next");
+		this.show();
+		console.log($("#slider_loading").width());
+	},
+
+	show : function($pause) {
+
+		var $sliderLoading = $("#slider_loading");
+
+		if ($sliderLoading.length) {
+			if ($pause == true) {
+				console.log("true");
+				$sliderLoading.stop();
+			}
+			else if ($pause == false) {
+				console.log("false");
+				$sliderLoading.animate({"width" : "100%"}, $timeInterval, "linear", function(){ $(this).css({"width" : "0px"}); });			
+			}
+			else {
+				console.log("nothin");
+				$sliderLoading.stop().css({"width" : "0px"});
+				$sliderLoading.animate({"width" : "100%"}, $timeInterval, "linear", function(){ $(this).css({"width" : "0px"}); });
+			}
+		}
+	}
+}
+
 function _slideChange($index) {
-	//clearInterval($sliderInterval);
-	//$sliderInterval = setInterval(function() {_slideTo("next");}, $timeInterval);
+	//$slideProgress.stop();
+	//$slideProgress.start();
 	
 	$("#slider_full_items > div").removeClass("slider_full_item_active_last");
 	var $slideActive = $("#slider_full_items > div.slider_full_item_active");
@@ -55,10 +104,9 @@ function _slideChange($index) {
 	
 	$slideFullItems.eq($index).addClass("slider_full_item_active");
 
-	_slideAnimate($way);
-	//_slideProgress();
-	console.log($index);
-	console.log($way);
+	_slideAnimate($way, "opacity");
+	//console.log($index);
+	//console.log($way);
 }
 
 function _slideTo($way) {
@@ -78,19 +126,17 @@ function _slideTo($way) {
 	_slideChange($index);
 }
 
-function _slideAnimate($way) {
+function _slideAnimate($way, $animation) {
 	var $slide = $("#slider_full_items > div.slider_full_item_active");
 	var $slideLastActive = $("#slider_full_items > div.slider_full_item_active_last");
+	
+	if ($animation == "flipping") {
+		$slideLastActive.css("display","block").animate({"left" : -$slide.outerWidth() * $way}, function(){ $(this).css("display","none"); });
+		$slide.css({"left" : $slide.outerWidth() * $way}).animate({"left" : "0px"});
+	}
 
-	$slideLastActive.css("display","block").animate({"left" : -$slide.outerWidth() * $way}, function(){ $(this).css("display","none"); });
-	$slide.css({"left" : $slide.outerWidth() * $way}).animate({"left" : "0px"});
-}
-
-function _slideProgress() {
-	var $sliderLoading = $("#slider_loading");
-
-	if ($sliderLoading.length) {
-		$sliderLoading.stop().css({"width" : "0px"});
-		$sliderLoading.animate({"width" : "100%"}, $timeInterval, "linear", function(){ $(this).css({"width" : "0px"}); });
+	if ($animation == "opacity") {
+		$slideLastActive.css({"display" : "block", "z-index" : "1"}).fadeOut("fast");
+		$slide.css({"left" : "0", "z-index" : "0"});
 	}
 }
