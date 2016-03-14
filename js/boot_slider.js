@@ -1,10 +1,27 @@
 
 $(document).ready(function(){
-	/* Интервал смены слайдов | The interval slide change */
-	$timeInterval = 3000;
 
-	/* Инициализация | Initialization */
+	$bootSlider = {
+		interval : 4000,
+		animate : "opacity" // opacity || flipping
+	};
+
+	_sliderInit();
+
+});
+
+function _sliderInit() {
+
+	$slideInterval = window.$bootSlider != undefined &&
+					"interval" in $bootSlider &&
+					$bootSlider.interval !== "" ? $bootSlider.interval : 4000;
+
+	$slideAnimate = window.$bootSlider != undefined &&
+					"animate" in $bootSlider &&
+					$bootSlider.animate != "" ? $bootSlider.animate : "flipping";
+
 	$slideFullItems = 0;
+	$lastIndex = null;
 
 	if ($("#slider_full_items > div").length) {
 		$slideFullItems = $("#slider_full_items > div");
@@ -30,23 +47,28 @@ $(document).ready(function(){
 		_slideTo("prev");
 	});
 
+	// Пауза при наведении мыши | Hover pause
 	$("#slider_full").hover(function(){
 		$slideProgress.pause();
 		
 	}, function(){
 		$slideProgress.resume();
 	});
-});
+}
 
 var $slideProgress = {
 	progressBar : $("#slider_loading"),
 	isPause : false,
 
-	start : function ($timeInterval) {
+	start : function ($slideInterval) {
+		if ($slideInterval == 0) {
+			return;
+		}
+
 		if (this.isPause == false) {
 			var self = this;
 			this.startAnimation();
-			this.interval = setInterval(function() { self.intervalFunction(); }, $timeInterval);
+			this.interval = setInterval(function() { self.intervalFunction(); }, $slideInterval);
 		}
 		else {
 			this.stop();
@@ -67,12 +89,16 @@ var $slideProgress = {
 	},
 
 	resume : function() {
+		if ($slideInterval == 0) {
+			return;
+		}
+
 		if (this.isPause == true) {
-			var residue = $timeInterval - (this.progressBar.width() / $("#slider_full_items").outerWidth() * $timeInterval);
+			var $residue = $slideInterval - (this.progressBar.width() / $("#slider_full_items").outerWidth() * $slideInterval);
 			var self = this;
 			
-			this.resumeAnimation(residue);
-			this.interval = setInterval(function() { self.intervalFunction(); }, residue);
+			this.resumeAnimation($residue);
+			this.interval = setInterval(function() { self.intervalFunction(); }, $residue);
 			this.isPause = false;
 		}
 	},
@@ -86,7 +112,7 @@ var $slideProgress = {
 
 		if (this.progressBar.length) {
 			this.progressBar.stop().css({"width" : "0px"});
-			this.progressBar.animate({"width" : "100%"}, $timeInterval, "linear", function(){ $(this).css({"width" : "0px"}); });
+			this.progressBar.animate({"width" : "100%"}, $slideInterval, "linear", function(){ $(this).css({"width" : "0px"}); });
 		}
 	},
 	stopAnimation : function() {
@@ -109,8 +135,14 @@ var $slideProgress = {
 }
 
 function _slideChange($index) {
+	// Не продолжаем функцию, если элемент тот же самый.
+	if ($lastIndex == $index) {
+		return;
+	}
+
+	$lastIndex = $index;
 	$slideProgress.stop();
-	$slideProgress.start($timeInterval);
+	$slideProgress.start($slideInterval);
 	
 	$("#slider_full_items > div").removeClass("slider_full_item_active_last");
 	var $slideActive = $("#slider_full_items > div.slider_full_item_active");
@@ -128,7 +160,7 @@ function _slideChange($index) {
 	
 	$slideFullItems.eq($index).addClass("slider_full_item_active");
 
-	_slideAnimate($way, "opacity");
+	_slideAnimate($way, $slideAnimate);
 }
 
 function _slideTo($way) {
